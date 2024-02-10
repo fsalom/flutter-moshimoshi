@@ -1,0 +1,65 @@
+# Miscellaneous
+*.class
+*.log
+*.pyc
+*.swp
+.DS_Store
+.atom/
+.buildlog/
+.history
+.svn/
+migrate_working_dir/
+
+# IntelliJ related
+*.iml
+*.ipr
+*.iws
+.idea/
+
+# The .vscode folder contains launch configuration and tasks you configure in
+# VS Code which you may wish to be included in version control, so this line
+# is commented out by default.
+#.vscode/
+
+# Flutter/Dart/Pub related
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub/
+build/
+
+# Android specific entries
+**/android/**/build/
+**/android/key.properties
+**/android/gradle.properties
+
+# iOS specific entries
+**/ios/Flutter/App.framework
+**/ios/Flutter/App.podspec
+**/ios/Flutter/Flutter.framework
+**/ios/Flutter/Flutter.podspec
+**/ios/Flutter/Generated.xcconfig
+**/ios/Flutter/Generated.xcconfig.sample
+**/ios/Flutter/GeneratedInfo.plist
+**/ios/Flutter/Generated.xcconfig
+**/ios/Runner.xcworkspace
+**/ios/Flutter/Debug.xcconfig
+**/ios/Flutter/Profile.xcconfig
+**/ios/Flutter/Release.xcconfig
+**/ios/Flutter/Generated.xcconfig
+**/ios/Flutter/ReleaseMode.xcconfig
+Podfile.lock
+podfile.lock
+
+# Other entries
+.DS_Store
+*.iml
+*.log
+*.pid
+*.lock
+.idea/
+.vscode/
+*.xcworkspace/
+*.xcworkspace
+.idea/
