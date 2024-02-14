@@ -1,9 +1,17 @@
 import 'dart:convert';
+import 'dart:ffi';
+import 'package:flutter_moshimoshi/authenticationCard/password/dto/tokensDTO.dart';
 import 'package:flutter_moshimoshi/entities/Token.dart';
 import 'package:flutter_moshimoshi/storage/storage_interface.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SharedPreferencesStorage implements StorageInterface {
+  static const String accessTokenKey = "ACCESSTOKEN_KEY";
+  static const String refreshTokenKey = "REFRESHTOKEN_KEY";
+  static const String expiresInKey = "EXPIRESIN_KEY";
+  static const String accessExpirationTimeKey = "ACCESSEXPIRATIONTIME_KEY";
+  static const String refreshExpirationTimeKey = "REFRESHEXPIRATIONTIME_KEY";
+
   late SharedPreferences preferences;
 
   Future init() async {
@@ -18,10 +26,12 @@ class SharedPreferencesStorage implements StorageInterface {
 
   @override
   Future<Token> getAccessToken() async {
-    var accessTokenJson = preferences.getString("access_token");
-    if (accessTokenJson != null) {
-      var accessToken = json.decode(accessTokenJson);
-      return Token.fromJson(accessToken);
+    var accessToken= preferences.getString(accessTokenKey);
+    var expiresIn = preferences.getInt(expiresInKey);
+    var expirationTime = preferences.getInt(accessExpirationTimeKey);
+
+    if(accessToken != null && expirationTime != null && expiresIn != null) {
+      return Token(accessToken, expiresIn, expirationTime);      
     } else {
       throw UnimplementedError();
     }
@@ -29,10 +39,10 @@ class SharedPreferencesStorage implements StorageInterface {
 
   @override
   Future<Token> getRefreshToken() async {
-    var refreshTokenJson = preferences.getString("refresh_token");
-    if (refreshTokenJson != null) {
-      var refreshToken = json.decode(refreshTokenJson);
-      return Token.fromJson(refreshToken);
+    var refreshToken = preferences.getString(refreshTokenKey);
+    var expirationTime = preferences.getInt(refreshExpirationTimeKey);
+    if(refreshToken != null && expirationTime != null) {
+      return Token(refreshToken, 0, expirationTime);      
     } else {
       throw UnimplementedError();
     }
@@ -40,12 +50,15 @@ class SharedPreferencesStorage implements StorageInterface {
 
   @override
   Future<void> setAccessToken(Token token) async {
-    preferences.setString("access_token", json.encode(token));
+    preferences.setString(accessTokenKey, token.value);
+    preferences.setInt(accessExpirationTimeKey, token.expirationTime);
+    preferences.setInt(expiresInKey, token.expiresIn);
   }
 
   @override
   Future<void> setRefreshToken(Token token) async {
-    preferences.setString("access_token", json.encode(token));
+    preferences.setString(refreshTokenKey, token.value);
+    preferences.setInt(refreshExpirationTimeKey, token.expirationTime);
   }
 
 }
