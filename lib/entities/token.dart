@@ -1,13 +1,14 @@
-import 'package:json_annotation/json_annotation.dart';
-part 'token.g.dart';
-
-@JsonSerializable()
 class Token {
-  final String accessToken;
-  final int expiresIn;
-  late final DateTime expirationTime;
+  late String value;
+  late int expiresIn;
+  late final int expirationTime;
+  bool get isValid {
+    return DateTime.now().millisecondsSinceEpoch < expirationTime;
+  }
 
-  Token({required this.accessToken, required this.expiresIn}) {
-    expirationTime = DateTime.now().add(Duration(seconds: expiresIn));
+  Token(String value, int expiresIn, int expirationTime) {
+    value = value;
+    expiresIn = expiresIn;
+    expirationTime = expirationTime;
   }
 }
