@@ -1,4 +1,4 @@
-import "package:flutter_moshimoshi/entities/Token.dart";
+import "package:flutter_moshimoshi/entities/token.dart";
 
 class Tokens {
   late Token acccesToken;
