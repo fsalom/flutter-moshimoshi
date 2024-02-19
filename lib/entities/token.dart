@@ -6,9 +6,12 @@ class Token {
     return DateTime.now().millisecondsSinceEpoch < expirationTime;
   }
 
-  Token(String value, int expiresIn, int expirationTime) {
+  Token(String value, int expiresIn, [int expirationTime = 0]) {
     value = value;
     expiresIn = expiresIn;
-    expirationTime = expirationTime;
+    if (expirationTime == 0) {
+      var expirationDate = DateTime.now().add(Duration(seconds: expiresIn));
+      expirationTime = expirationDate.microsecondsSinceEpoch;
+    }
   }
 }
