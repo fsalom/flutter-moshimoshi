@@ -1,4 +1,4 @@
-import 'package:flutter_moshimoshi/entities/Token.dart';
+import 'package:flutter_moshimoshi/entities/token.dart';
 import 'package:flutter_moshimoshi/storage/storage_interface.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
