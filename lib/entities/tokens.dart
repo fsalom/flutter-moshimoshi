@@ -4,7 +4,7 @@ class Tokens {
   late Token acccesToken;
   late Token refreshToken;
 
-  Tokens(Token accessToken, Token refreshToken) {
+  Tokens({required  Token accessToken, required Token refreshToken}) {
     acccesToken = accessToken;
     refreshToken = refreshToken;
   }
