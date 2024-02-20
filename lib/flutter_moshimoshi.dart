@@ -13,9 +13,9 @@ class MoshiMoshi {
   late StorageInterface storage;
   late Dio dio;
 
-  init(AuthenticatorInterface authenticator, StorageInterface storage, Interceptor interceptor) {
-    this.authenticator = authenticator;
-    this.storage = storage;
+  MoshiMoshi(AuthenticatorInterface authenticator, StorageInterface storage, Interceptor interceptor) {
+    authenticator = authenticator;
+    storage = storage;
     dio = Dio(BaseOptions( connectTimeout: timeout));
     dio.interceptors.add(interceptor);
   }
