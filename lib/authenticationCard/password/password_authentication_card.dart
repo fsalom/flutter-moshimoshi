@@ -1,51 +1,50 @@
 import 'dart:convert';
-
 import 'package:flutter_moshimoshi/authenticationCard/authentication_card_interface.dart';
-import 'package:flutter_moshimoshi/authenticationCard/password/dto/tokensDTO.dart';
 import 'package:flutter_moshimoshi/entities/endpoint.dart';
+import 'package:flutter_moshimoshi/entities/token.dart';
 import 'package:flutter_moshimoshi/entities/tokens.dart';
-import 'package:http/http.dart' as http;
+import 'package:flutter/material.dart';
 
 class PasswordAuthenticationCard implements AuthenticatorCardInterface {
   late final Endpoint loginEndpoint;
   late final Endpoint refreshEndpoint;
+  late final int refreshExpirationTime;
+  late final BuildContext context;
+  late final StatefulWidget loginFailedDestination;
 
   PasswordAuthenticationCard({
     required this.loginEndpoint,
-    required this.refreshEndpoint
+    required this.refreshEndpoint,
+    required this.context
   });
 
   @override
-  Future<Tokens> getCurrentToken(List<Parameter> parameters) async {
-    try {
-      final url = Uri.parse(loginEndpoint.url); 
-      http.post(url, headers: loginEndpoint.headers, body: loginEndpoint.body)
-      var completeLoginEndpoint = loginEndpoint;
-      completeLoginEndpoint.add(parameters);
-      final request = completeLoginEndpoint.getRequest();
-      final response = await http.get(completeLoginEndpoint.uri)
-      final parsed = jsonDecode(response.stream.toString());
-      final Map<String, dynamic> tokensData =
-          json.decode(response.stream.toString());
-      TokensDTO
-    } catch (e) {
+  Future<Tokens?> getCurrentToken(Map<String, dynamic> parameters) async {
+    loginEndpoint.formParams.addAll(parameters);
+    final response = await loginEndpoint.call();
+    if(response.statusCode == 200) {
+      final data = jsonDecode(response.body.toString());
+      final accessToken = Token(data["access_token"], data["expires_in"]);
+      final refreshToken = Token(data["refresh_token"], 800000);
+      return Tokens(accessToken: accessToken, refreshToken: refreshToken);
+    } else {
+      showLogin();
       return null;
     }
   }
 
   @override
   Future<Tokens?> refreshAccessToken(String refreshToken) async {
-    try {
-      var completeRefreshEndpoint = refreshEndpoint;
-      var refreshParameter = Parameter(key: "refresh_token", value: refreshToken);
-      completeRefreshEndpoint.add([refreshParameter]);
-      final request = completeRefreshEndpoint.getRequest();
-      final response = await http.Client().send(request);
-      
-      final Map<String, dynamic> tokensData = response.body;
-          json.decode(utf8.decode(response.bodyBytes));
-      return TokensDTO.fromJson(tokensData).toDomain();
-    } catch (e) {
+    final refreshTokenEntry = <String, String>{"refresh_token": refreshToken};
+    loginEndpoint.formParams.addEntries(refreshTokenEntry.entries);
+    final response = await loginEndpoint.call();
+    if(response.statusCode == 200) {
+      final data = jsonDecode(response.body.toString());
+      final accessToken = Token(data["access_token"], data["expires_in"]);
+      final refreshToken = Token(data["refresh_token"], 800000);
+      return Tokens(accessToken: accessToken, refreshToken: refreshToken);
+    } else {
+      showLogin();
       return null;
     }
   }
@@ -56,7 +55,7 @@ class PasswordAuthenticationCard implements AuthenticatorCardInterface {
   }
 
   void showLogin() {
-    // Puedes implementar la navegación a la pantalla de inicio de sesión en Flutter
-    // utilizando Navigator, MaterialPageRoute, etc.
+    //Navigator.of(context)
+    //        .pushReplacement(MaterialPageRoute(builder: (context) => const loginFailedDestination()));
   }
 }
