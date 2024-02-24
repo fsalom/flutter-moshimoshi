@@ -1,4 +1,4 @@
-import 'package:flutter_moshimoshi/entities/Token.dart';
+import 'package:flutter_moshimoshi/entities/token.dart';
 
 abstract class StorageInterface {
   Future<Token> getAccessToken();
