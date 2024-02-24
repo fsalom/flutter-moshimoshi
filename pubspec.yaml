@@ -1,7 +1,6 @@
 name: flutter_moshimoshi
 description: "A new Flutter package project."
 version: 0.0.1
-homepage:
 
 environment:
   sdk: '>=3.2.6 <4.0.0'
@@ -11,6 +10,7 @@ dependencies:
   dio: ^5.4.0
   flutter:
     sdk: flutter
+  flutter_bloc: ^8.1.3
   http: ^1.2.0
   json_annotation: ^4.8.1
   shared_preferences: ^2.2.2
