@@ -9,23 +9,30 @@ class SharedPreferencesStorage implements StorageInterface {
   static const String accessExpirationTimeKey = "ACCESSEXPIRATIONTIME_KEY";
   static const String refreshExpirationTimeKey = "REFRESHEXPIRATIONTIME_KEY";
 
-  late SharedPreferences preferences;
+  Future<SharedPreferences> preferences = SharedPreferences.getInstance();
 
-  Future init() async {
-    preferences = await SharedPreferences.getInstance();
+/*
+  SharedPreferencesStorage() {
+    initializer();
   }
 
+  initializer() async {
+    preferences = 
+  }
+*/
   @override
   Future<void> clear() async {
-    preferences.remove("access_token");
-    preferences.remove("refresh_token");
+    var storage = await preferences;
+    storage.remove("access_token");
+    storage.remove("refresh_token");
   }
 
   @override
   Future<Token> getAccessToken() async {
-    var accessToken= preferences.getString(accessTokenKey);
-    var expiresIn = preferences.getInt(expiresInKey);
-    var expirationTime = preferences.getInt(accessExpirationTimeKey);
+    var storage = await preferences;
+    var accessToken= storage.getString(accessTokenKey);
+    var expiresIn = storage.getInt(expiresInKey);
+    var expirationTime = storage.getInt(accessExpirationTimeKey);
 
     if(accessToken != null && expirationTime != null && expiresIn != null) {
       return Token(accessToken, expiresIn, expirationTime);      
@@ -36,8 +43,9 @@ class SharedPreferencesStorage implements StorageInterface {
 
   @override
   Future<Token> getRefreshToken() async {
-    var refreshToken = preferences.getString(refreshTokenKey);
-    var expirationTime = preferences.getInt(refreshExpirationTimeKey);
+    var storage = await preferences;
+    var refreshToken = storage.getString(refreshTokenKey);
+    var expirationTime = storage.getInt(refreshExpirationTimeKey);
     if(refreshToken != null && expirationTime != null) {
       return Token(refreshToken, 0, expirationTime);      
     } else {
@@ -47,15 +55,17 @@ class SharedPreferencesStorage implements StorageInterface {
 
   @override
   Future<void> setAccessToken(Token token) async {
-    preferences.setString(accessTokenKey, token.value);
-    preferences.setInt(accessExpirationTimeKey, token.expirationTime);
-    preferences.setInt(expiresInKey, token.expiresIn);
+    var storage = await preferences;
+    storage.setString(accessTokenKey, token.value);
+    storage.setInt(accessExpirationTimeKey, token.expirationTime);
+    storage.setInt(expiresInKey, token.expiresIn);
   }
 
   @override
   Future<void> setRefreshToken(Token token) async {
-    preferences.setString(refreshTokenKey, token.value);
-    preferences.setInt(refreshExpirationTimeKey, token.expirationTime);
+    var storage = await preferences;
+    storage.setString(refreshTokenKey, token.value);
+    storage.setInt(refreshExpirationTimeKey, token.expirationTime);
   }
 
 }
