@@ -1,17 +1,24 @@
 class Token {
-  late String value;
-  late int expiresIn;
-  late final int expirationTime;
+  final String value;
+  final int expiresIn;
+  int expirationTime = 0;
+
   bool get isValid {
     return DateTime.now().millisecondsSinceEpoch < expirationTime;
   }
 
-  Token(String value, int expiresIn, [int expirationTime = 0]) {
-    value = value;
-    expiresIn = expiresIn;
-    if (expirationTime == 0) {
+  Token(this.value, this.expiresIn, int expirationTimeValue) {
+    print("Creating Token instance with value: $value, expiresIn: $expiresIn, expirationTimeValue: $expirationTimeValue");    
+    calculateExpirationTime(expirationTimeValue);
+    print("es válido: $isValid");
+  }
+
+  void calculateExpirationTime(int expirationTimeValue) {
+    if (expirationTimeValue == 0) {
       var expirationDate = DateTime.now().add(Duration(seconds: expiresIn));
-      expirationTime = expirationDate.microsecondsSinceEpoch;
+      expirationTime = expirationDate.millisecondsSinceEpoch;
+    } else {
+      expirationTime = expirationTimeValue;
     }
   }
 }

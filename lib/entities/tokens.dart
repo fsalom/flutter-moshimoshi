@@ -1,11 +1,13 @@
-import "package:flutter_moshimoshi/entities/token.dart";
+import 'package:flutter_moshimoshi/entities/token.dart';
 
 class Tokens {
-  late Token acccesToken;
-  late Token refreshToken;
+  Token accessToken;
+  Token refreshToken;
 
-  Tokens({required  Token accessToken, required Token refreshToken}) {
-    acccesToken = accessToken;
+  Tokens({required this.accessToken, required this.refreshToken}) {
+    accessToken = accessToken;
+    print("AccessToken: $accessToken");
     refreshToken = refreshToken;
+    print("RefreshToken: $refreshToken");
   }
 }
