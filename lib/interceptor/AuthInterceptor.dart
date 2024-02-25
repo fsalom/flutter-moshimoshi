@@ -64,7 +64,14 @@ class AuthInterceptor extends Interceptor {
 
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) {
-    // TODO: implement onError
-    super.onError(err, handler);
+    // Manejar específicamente el código de estado 401
+    if (err.response?.statusCode == 401) {
+      // Realizar acciones específicas para el código de estado 401, como redirección a la página de inicio de sesión
+      // También puedes elegir no arrojar una excepción para evitar que se propague el error.
+      log("Error 401: Redirección a la página de inicio de sesión");
+    } else {
+      // Manejar otros errores según sea necesario
+      super.onError(err, handler);
+    }
   }
 }
