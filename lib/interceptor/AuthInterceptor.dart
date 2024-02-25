@@ -1,22 +1,59 @@
 
+import 'dart:async';
+import 'dart:collection';
 import 'dart:developer';
 
 import 'package:dio/dio.dart';
+import 'package:flutter_moshimoshi/authenticator/app/authenticator.dart';
 import 'package:flutter_moshimoshi/authenticator/authenticator_interface.dart';
 
 class AuthInterceptor extends Interceptor {
   late final AuthenticatorInterface authenticator;
+  final _requestQueue = Queue<Completer<void>>();
 
   AuthInterceptor({required this.authenticator });
+  
 
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
-    // TODO: implement onRequest
-    super.onRequest(options, handler);
     log(">>> DIO REQUEST PATH: ${options.path}");
     log(">>> DIO REQUEST HEADERS: ${options.headers}");
-    authenticator.authorize(options);
-    return handler.next(options);
+
+    final completer = Completer<void>();
+    _requestQueue.add(completer);
+
+    // Esperar a que se complete la solicitud anterior (si la hay) antes de continuar
+    if (_requestQueue.length > 1) {
+      completer.future.then((_) {
+        handler.next(options);
+      });
+    } else {
+      _processRequest(options, handler, completer);
+    }
+  }
+
+  void _processRequest(
+    RequestOptions options,
+    RequestInterceptorHandler handler,
+    Completer<void> completer,
+  ) async {
+    try {
+      // Obtener el token de forma asíncrona
+      final accessToken = await _getToken();
+      if (accessToken != null) {
+        options.headers["Authorization"] = "Bearer $accessToken";
+      }
+      handler.next(options);
+    } finally {
+      completer.complete(); // Marcar la solicitud como completada
+      _requestQueue.removeFirst(); // Eliminar la solicitud de la cola
+    }
+  }
+
+  Future<String?> _getToken() async {
+    // Lógica para obtener el token aquí, por ejemplo, puedes usar await para
+    // operaciones asíncronas.
+    return await authenticator.getCurrentToken();
   }
 
   @override
