@@ -4,12 +4,10 @@ import 'dart:developer';
 import 'package:dio/dio.dart';
 import 'package:flutter_moshimoshi/authenticator/authenticator_interface.dart';
 
-class AuthInterceptors extends Interceptor {
-  late AuthenticatorInterface authenticator;
+class AuthInterceptor extends Interceptor {
+  late final AuthenticatorInterface authenticator;
 
-  init(AuthenticatorInterface authenticator){
-    this.authenticator = authenticator;
-  }
+  AuthInterceptor({required this.authenticator });
 
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
