@@ -1,13 +1,10 @@
-import 'dart:ffi';
 import 'dart:isolate';
-
 import 'package:dio/dio.dart';
 import 'package:flutter_moshimoshi/authenticationCard/authentication_card_interface.dart';
 import 'package:flutter_moshimoshi/authenticator/authenticator_interface.dart';
 import 'package:flutter_moshimoshi/entities/error.dart';
 import 'package:flutter_moshimoshi/entities/tokens.dart';
 import 'package:flutter_moshimoshi/storage/storage_interface.dart';
-import 'package:http/http.dart' as http;
 
 class Authenticator implements AuthenticatorInterface {
   @override
@@ -27,22 +24,33 @@ class Authenticator implements AuthenticatorInterface {
   
   @override
   Future<String?> getCurrentToken() async {
-    var tokens = await checkAccess().catchError((error) {
+    try {
+      var tokens = await checkAccess();
+      return tokens.accessToken.value;
+    } catch(error) {
       logout();
-      });
-    return tokens.acccesToken.value;
+    }
   }
   
   @override
-  Future<void> getNewToken(String parameters) {
-    // TODO: implement getNewToken
-    throw UnimplementedError();
+  Future<void> getNewToken(Map<String, dynamic> parameters) async {
+    var tokens = await card.getCurrentToken(parameters);
+    if(tokens != null) {  
+      tokenStore.setAccessToken(tokens.accessToken);
+      tokenStore.setRefreshToken(tokens.refreshToken);  
+    } else {
+      throw AuthorizationFailed;
+    }
   }
   
   @override
   Future<bool> isLogged() async {
+    try {
     var tokens = await checkAccess();
-    return true;
+      return true;
+    } catch(error) {
+      return false;
+    }
   }
   
   @override
@@ -52,26 +60,24 @@ class Authenticator implements AuthenticatorInterface {
   }
 
   Future<Tokens> checkAccess() async {
-    var accessToken = await tokenStore.getAccessToken()
-    .catchError((error) {
-         logout();
-      });
-    var refreshToken = await tokenStore.getRefreshToken()
-    .catchError((error) {
-         logout();
-      });
-    if (accessToken.isValid) {
-      return Tokens(accessToken, refreshToken);
-    } else {
-      if (refreshToken.isValid) {
-        var tokens = await card.refreshAccessToken(refreshToken.value);
-        tokenStore.setAccessToken(tokens.acccesToken);
-        tokenStore.setRefreshToken(tokens.refreshToken);    
-        return tokens;
+    try {
+      var accessToken = await tokenStore.getAccessToken();
+      var refreshToken = await tokenStore.getRefreshToken();
+      if (accessToken.isValid) {
+        return Tokens(accessToken: accessToken, refreshToken: refreshToken);
       } else {
-        await logout();
-        throw AuthorizationFailed();
+        if (refreshToken.isValid) {
+          var tokens = await card.refreshAccessToken(refreshToken.value);
+          if(tokens != null) {
+            tokenStore.setAccessToken(tokens.accessToken);
+            tokenStore.setRefreshToken(tokens.refreshToken);    
+            return tokens;
+          }  
+        } 
+        throw AuthorizationFailed(); 
       }
-    } 
+    } catch(error) {
+      throw AuthorizationFailed();
+    }
   }
 }
