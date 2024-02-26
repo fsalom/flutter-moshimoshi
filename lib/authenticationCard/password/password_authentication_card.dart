@@ -8,40 +8,42 @@ import 'package:flutter/material.dart';
 class PasswordAuthenticationCard implements AuthenticatorCardInterface {
   late final Endpoint loginEndpoint;
   late final Endpoint refreshEndpoint;
-  late final int refreshExpirationTime;
-  late final BuildContext context;
-  late final StatefulWidget loginFailedDestination;
+  final BuildContext? context;
+  final Widget loginPage;
 
   PasswordAuthenticationCard({
     required this.loginEndpoint,
     required this.refreshEndpoint,
-    required this.context
+    required this.context,
+    required this.loginPage
   });
 
   @override
   Future<Tokens?> getCurrentToken(Map<String, dynamic> parameters) async {
+    print("LLAMADA DE LOGIN");
     loginEndpoint.formParams.addAll(parameters);
     final response = await loginEndpoint.call();
     if(response.statusCode == 200) {
       final data = jsonDecode(response.body.toString());
-      final accessToken = Token(data["access_token"], data["expires_in"]);
-      final refreshToken = Token(data["refresh_token"], 800000);
-      return Tokens(accessToken: accessToken, refreshToken: refreshToken);
+      final accessToken = Token(data["access_token"], data["expires_in"], 0);
+      final refreshToken = Token(data["refresh_token"], 800000, 0);
+      final tokens = Tokens(accessToken: accessToken, refreshToken: refreshToken);
+      return tokens;
     } else {
-      showLogin();
       return null;
     }
   }
 
   @override
   Future<Tokens?> refreshAccessToken(String refreshToken) async {
+    print("LLAMADA DE REFRESH");
     final refreshTokenEntry = <String, String>{"refresh_token": refreshToken};
     loginEndpoint.formParams.addEntries(refreshTokenEntry.entries);
     final response = await loginEndpoint.call();
     if(response.statusCode == 200) {
-      final data = jsonDecode(response.body.toString());
-      final accessToken = Token(data["access_token"], data["expires_in"]);
-      final refreshToken = Token(data["refresh_token"], 800000);
+      var data = jsonDecode(response.body.toString());
+      var accessToken = Token(data["access_token"], data["expires_in"], 0);
+      var refreshToken = Token(data["refresh_token"], 800000, 0);
       return Tokens(accessToken: accessToken, refreshToken: refreshToken);
     } else {
       showLogin();
@@ -55,7 +57,9 @@ class PasswordAuthenticationCard implements AuthenticatorCardInterface {
   }
 
   void showLogin() {
-    //Navigator.of(context)
-    //        .pushReplacement(MaterialPageRoute(builder: (context) => const loginFailedDestination()));
+    if(context != null ){
+    Navigator.of(context!)
+          .pushReplacement(MaterialPageRoute(builder: (context) => loginPage));
+          }
   }
 }
