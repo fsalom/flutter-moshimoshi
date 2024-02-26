@@ -1,26 +1,20 @@
 library flutter_moshimoshi;
 import 'dart:core';
-import 'dart:developer';
-import 'dart:js_util';
 import 'package:dio/dio.dart';
-import 'package:flutter_moshimoshi/authenticationCard/authentication_card_interface.dart';
 import 'package:flutter_moshimoshi/authenticator/authenticator_interface.dart';
 import 'package:flutter_moshimoshi/storage/storage_interface.dart';
 
 class MoshiMoshi {
-  var timeout = const Duration(seconds: 30);
-  late AuthenticatorInterface authenticator;
-  late StorageInterface storage;
-  late Dio dio;
+  final _timeout = const Duration(seconds: 30);
+  final AuthenticatorInterface authenticator;
+  final StorageInterface storage;
+  final Interceptor interceptor;
+  late Dio call;
+  late Dio callAuthenticated;
 
-  MoshiMoshi(AuthenticatorInterface authenticator, StorageInterface storage, Interceptor interceptor) {
-    authenticator = authenticator;
-    storage = storage;
-    dio = Dio(BaseOptions( connectTimeout: timeout));
-    dio.interceptors.add(interceptor);
-  }
-
-  load() {
-    
+  MoshiMoshi({required this.authenticator, required this.storage, required this.interceptor}) {   
+    call = Dio(BaseOptions( connectTimeout: _timeout));
+    callAuthenticated = Dio(BaseOptions( connectTimeout: _timeout));
+    callAuthenticated.interceptors.add(interceptor);
   }
 }
