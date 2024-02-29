@@ -1,29 +1,59 @@
-import 'package:authentication_flow/bloc/bloc_status.dart';
-import 'package:authentication_flow/constants/constants.dart';
-import 'package:authentication_flow/services/auth.dart';
-import 'package:authentication_flow/services/dio_service.dart';
-import 'package:dio/dio.dart';
+import 'package:example/bloc/bloc_status.dart';
+import 'package:example/constants/constants.dart';
+import 'package:example/di/di.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_moshimoshi/entities/token.dart';
 
 class HomeCubit extends Cubit<BlocStatus> {
   HomeCubit() : super(BlocStatus.success);
 
   void getInfo() async {
+   
+  }
+
+  void logout() async {
     try {
       emit(BlocStatus.loading);
-      String accessToken = await Auth().getAccessToken() ?? "";
-      Map<String, dynamic> headers = {'Authorization': "Bearer $accessToken"};
-      await DioService.dio.get("${Constants.baseUrl}/sites/favorites?page=1", options: Options(headers: headers));
+      Di().setContext(Constants.navKey.currentContext!);            
+      await Di().authenticator?.logout();
       emit(BlocStatus.success);
     } catch (error) {
       emit(BlocStatus.error);
     }
   }
 
-  void logout() async {
+  void expireAccess() async {
     try {
       emit(BlocStatus.loading);
-      await Auth().logout();
+      Token token = await Di().tokenStore.getAccessToken();
+      var newToken = Token(token.value, 0, 0);
+      Di().tokenStore.setAccessToken(newToken);   
+      emit(BlocStatus.success);
+    } catch (error) {
+      emit(BlocStatus.error);
+    }
+  }
+
+  void expireAccessAndRefresh() async {
+    try {
+      emit(BlocStatus.loading);
+      Token token = await Di().tokenStore.getAccessToken();
+      var newToken = Token(token.value, 0, 0);
+      Di().tokenStore.setAccessToken(newToken);   
+      Token refreshToken = await Di().tokenStore.getRefreshToken();
+      var newRefreshToken = Token(refreshToken.value, 0, 0);
+      Di().tokenStore.setRefreshToken(newRefreshToken);      
+      emit(BlocStatus.success);
+    } catch (error) {
+      emit(BlocStatus.error);
+    }
+  }
+
+  void authenticatedCall() async {
+     try {
+      emit(BlocStatus.loading);            
+      var data = Di().moshi?.callAuthenticated.get("${Constants.baseUrl}/sites/favorites?page=1");  
+      print(data.toString());
       emit(BlocStatus.success);
     } catch (error) {
       emit(BlocStatus.error);
