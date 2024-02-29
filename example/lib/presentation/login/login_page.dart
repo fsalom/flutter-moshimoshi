@@ -1,5 +1,5 @@
-import 'package:authentication_flow/bloc/bloc_status.dart';
-import 'package:authentication_flow/presentation/login/login_cubit.dart';
+import 'package:example/bloc/bloc_status.dart';
+import 'package:example/presentation/login/login_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
