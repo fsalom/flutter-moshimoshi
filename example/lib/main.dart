@@ -1,20 +1,17 @@
-import 'package:authentication_flow/constants/constants.dart';
-import 'package:authentication_flow/presentation/home/home_page.dart';
-import 'package:authentication_flow/presentation/login/login_page.dart';
-import 'package:authentication_flow/services/auth.dart';
-import 'package:authentication_flow/services/dio_service.dart';
+import 'package:example/constants/constants.dart';
+import 'package:example/di/di.dart';
+import 'presentation/home/home_page.dart';
+import 'presentation/login/login_page.dart';
 import 'package:flutter/material.dart';
 
 void main() {
-  DioService.addInterceptors();
-
   runApp(
     const MainApp(),
   );
 }
 
 class MainApp extends StatefulWidget {
-  const MainApp({super.key});
+  const MainApp({Key? key}) : super(key: key);
 
   @override
   State<MainApp> createState() => _MainAppState();
@@ -30,12 +27,20 @@ class _MainAppState extends State<MainApp> {
   }
 
   void _initialSteps() async {
-    isLogged = await Auth().isLogged();
-    setState(() {});
+    // Inicializar Di antes de acceder a sus propiedades
+    Di().setContext(context);
+
+    if (Di().authenticator != null) {
+      bool loggedIn = await Di().authenticator!.isLogged();
+      setState(() {
+        isLogged = loggedIn;
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    // No es necesario inicializar Di en el método build
     return MaterialApp(
       navigatorKey: Constants.navKey,
       debugShowCheckedModeBanner: false,
