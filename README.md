@@ -1,4 +1,4 @@
-# MoshiMoshi  <img src="/lib/doc/assets/moshiMoshiIcon.png" alt="image" width="70" height="70">
+# MoshiMoshi  <img src="/lib/docs/assets/moshiMoshiIcon.png" alt="image" width="70" height="70">
 [![My Skills](https://skillicons.dev/icons?i=dart,flutter)](https://flutter.dev)
 
 Introducing the MooshiMoshi library: A powerful pakage for optimizing communication between Flutter applications and HTTP servers. Crafted to simplify the complexities of HTTP requests, authentication, and data storage, MooshiMoshi offers a robust toolkit of utilities and abstractions.
