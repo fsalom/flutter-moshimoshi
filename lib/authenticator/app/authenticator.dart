@@ -72,11 +72,13 @@ class Authenticator implements AuthenticatorInterface {
             tokenStore.setAccessToken(tokens.accessToken);
             tokenStore.setRefreshToken(tokens.refreshToken);    
             return tokens;
-          }  
+          }
         } 
+        tokenStore.clear();
         throw AuthorizationFailed(); 
       }
     } catch(error) {
+      tokenStore.clear();
       throw AuthorizationFailed();
     }
   }
