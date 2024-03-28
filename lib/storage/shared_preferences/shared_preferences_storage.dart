@@ -20,11 +20,11 @@ class SharedPreferencesStorage implements StorageInterface {
     preferences = 
   }
 */
-  @override
+@override
   Future<void> clear() async {
     var storage = await preferences;
-    storage.remove("access_token");
-    storage.remove("refresh_token");
+    storage.remove(accessTokenKey);
+    storage.remove(refreshTokenKey);
   }
 
   @override
