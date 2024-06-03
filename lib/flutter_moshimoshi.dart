@@ -9,12 +9,14 @@ class MoshiMoshi {
   final AuthenticatorInterface authenticator;
   final StorageInterface storage;
   final Interceptor interceptor;
+  final Interceptor? auxInterceptor;
   late Dio call;
   late Dio callAuthenticated;
 
-  MoshiMoshi({required this.authenticator, required this.storage, required this.interceptor}) {   
+  MoshiMoshi({required this.authenticator, required this.storage, required this.interceptor, this.auxInterceptor}) {   
     call = Dio(BaseOptions( connectTimeout: _timeout));
     callAuthenticated = Dio(BaseOptions( connectTimeout: _timeout));
     callAuthenticated.interceptors.add(interceptor);
+    if(auxInterceptor != null) call.interceptors.add(auxInterceptor!);
   }
 }
