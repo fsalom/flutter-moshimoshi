@@ -59,7 +59,7 @@ class Di {
     _moshi = MoshiMoshi(
       authenticator: _authenticator!,
       storage: tokenStore,
-      interceptor: interceptor,
+      interceptors: [interceptor],
     );    
   }
 }
