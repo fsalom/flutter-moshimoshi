@@ -8,13 +8,20 @@ class MoshiMoshi {
   final _timeout = const Duration(seconds: 30);
   final AuthenticatorInterface authenticator;
   final StorageInterface storage;
-  final Interceptor interceptor;
+  final List<Interceptor> interceptors;
   late Dio call;
   late Dio callAuthenticated;
 
-  MoshiMoshi({required this.authenticator, required this.storage, required this.interceptor}) {   
-    call = Dio(BaseOptions( connectTimeout: _timeout));
-    callAuthenticated = Dio(BaseOptions( connectTimeout: _timeout));
-    callAuthenticated.interceptors.add(interceptor);
+  MoshiMoshi({
+    required this.authenticator,
+    required this.storage,
+    required this.interceptors,
+  }) {
+    call = Dio(BaseOptions(connectTimeout: _timeout));
+    callAuthenticated = Dio(BaseOptions(connectTimeout: _timeout));
+
+    for (var interceptor in interceptors) {
+      callAuthenticated.interceptors.add(interceptor);
+    }
   }
 }
