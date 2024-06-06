@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_moshimoshi/authenticationCard/password/password_authentication_card.dart';
 import 'package:flutter_moshimoshi/authenticator/app/authenticator.dart';
 import 'package:flutter_moshimoshi/entities/endpoint.dart';
+import 'package:flutter_moshimoshi/entities/moshi_interceptor.dart';
 import 'package:flutter_moshimoshi/flutter_moshimoshi.dart';
 import 'package:flutter_moshimoshi/interceptor/AuthInterceptor.dart';
 import 'package:flutter_moshimoshi/storage/shared_preferences/shared_preferences_storage.dart';
@@ -29,7 +30,7 @@ class Di {
 
   StorageInterface tokenStore = SharedPreferencesStorage();
   late PasswordAuthenticationCard card;
-  late AuthInterceptor interceptor;
+  late MoshiInterceptor interceptor;
 
   Authenticator? _authenticator;
   MoshiMoshi? _moshi;
@@ -55,7 +56,8 @@ class Di {
       loginPage: LoginPage(),
     );    
     _authenticator = Authenticator(tokenStore, card);
-    interceptor = AuthInterceptor(authenticator: _authenticator!);
+
+    interceptor = MoshiInterceptor(type: InterceptorType.authenticated, interceptor: AuthInterceptor(authenticator: _authenticator!));
     _moshi = MoshiMoshi(
       authenticator: _authenticator!,
       storage: tokenStore,
