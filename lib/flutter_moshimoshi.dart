@@ -1,4 +1,5 @@
 library flutter_moshimoshi;
+
 import 'dart:core';
 import 'package:dio/dio.dart';
 import 'package:flutter_moshimoshi/authenticator/authenticator_interface.dart';
@@ -24,13 +25,12 @@ class MoshiMoshi {
     for (var moshiInterceptor in interceptors) {
       switch (moshiInterceptor.type) {
         case InterceptorType.nonAuthenticated:
-          callAuthenticated.interceptors.add(moshiInterceptor.interceptor);
+          call.interceptors.add(moshiInterceptor.interceptor);
           break;
         case InterceptorType.authenticated:
           callAuthenticated.interceptors.add(moshiInterceptor.interceptor);
           break;
       }
-      
     }
   }
 }
