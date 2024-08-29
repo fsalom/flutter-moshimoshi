@@ -2,6 +2,7 @@ import 'dart:isolate';
 import 'package:dio/dio.dart';
 import 'package:flutter_moshimoshi/authenticationCard/authentication_card_interface.dart';
 import 'package:flutter_moshimoshi/authenticator/authenticator_interface.dart';
+import 'package:flutter_moshimoshi/entities/endpoint.dart';
 import 'package:flutter_moshimoshi/entities/error.dart';
 import 'package:flutter_moshimoshi/entities/tokens.dart';
 import 'package:flutter_moshimoshi/storage/storage_interface.dart';
@@ -33,8 +34,8 @@ class Authenticator implements AuthenticatorInterface {
   }
   
   @override
-  Future<void> getNewToken(Map<String, dynamic> parameters) async {
-    var tokens = await card.getCurrentToken(parameters);
+  Future<void> getNewToken(Map<String, dynamic> parameters, {Endpoint? endpoint}) async {
+    var tokens = await card.getCurrentToken(parameters, endpoint: endpoint);
     if(tokens != null) {  
       tokenStore.setAccessToken(tokens.accessToken);
       tokenStore.setRefreshToken(tokens.refreshToken);  
