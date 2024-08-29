@@ -19,10 +19,13 @@ class PasswordAuthenticationCard implements AuthenticatorCardInterface {
   });
 
   @override
-  Future<Tokens?> getCurrentToken(Map<String, dynamic> parameters) async {
-    print("LLAMADA DE LOGIN");
-    loginEndpoint.formParams.addAll(parameters);
-    final response = await loginEndpoint.call();
+  Future<Tokens?> getCurrentToken(Map<String, dynamic> parameters, {Endpoint? endpoint}) async {
+    var authenticationEndpoint = loginEndpoint;
+    if (endpoint != null) {
+      authenticationEndpoint = endpoint;
+    }
+    authenticationEndpoint.formParams.addAll(parameters);
+    final response = await authenticationEndpoint.call();
     if(response.statusCode == 200) {
       final data = jsonDecode(response.body.toString());
       final accessToken = Token(data["access_token"], data["expires_in"], 0);
@@ -36,10 +39,9 @@ class PasswordAuthenticationCard implements AuthenticatorCardInterface {
 
   @override
   Future<Tokens?> refreshAccessToken(String refreshToken) async {
-    print("LLAMADA DE REFRESH");
     final refreshTokenEntry = <String, String>{"refresh_token": refreshToken};
-    loginEndpoint.formParams.addEntries(refreshTokenEntry.entries);
-    final response = await loginEndpoint.call();
+    refreshEndpoint.formParams.addEntries(refreshTokenEntry.entries);
+    final response = await refreshEndpoint.call();
     if(response.statusCode == 200) {
       var data = jsonDecode(response.body.toString());
       var accessToken = Token(data["access_token"], data["expires_in"], 0);
