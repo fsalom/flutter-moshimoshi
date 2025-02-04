@@ -11,22 +11,26 @@ class MoshiMoshi {
   final AuthenticatorInterface authenticator;
   final StorageInterface storage;
   final List<MoshiInterceptor> interceptors;
+  final String? baseUrl;
+
   late Dio call;
   late Dio callAuthenticated;
-  late String baseUrl;
 
   MoshiMoshi({
     required this.authenticator,
     required this.storage,
     required this.interceptors,
-    required this.baseUrl,
+    this.baseUrl,
   }) {
     call = Dio(BaseOptions(
-      baseUrl: baseUrl,
-      connectTimeout: _timeout));
+      baseUrl: baseUrl ?? "", 
+      connectTimeout: _timeout,
+    ));
+
     callAuthenticated = Dio(BaseOptions(
-      baseUrl: baseUrl,
-      connectTimeout: _timeout));
+      baseUrl: baseUrl ?? "", 
+      connectTimeout: _timeout,
+    ));
 
     for (var moshiInterceptor in interceptors) {
       switch (moshiInterceptor.type) {
