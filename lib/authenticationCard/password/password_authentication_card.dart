@@ -11,7 +11,6 @@ class PasswordAuthenticationCard implements AuthenticatorCardInterface {
   BuildContext? context;
   Widget? loginPage;
   GlobalKey<NavigatorState>? navigatorKey;
-  Route? loginRoute;
 
   // Constructor con BuildContext y loginPage
   PasswordAuthenticationCard({
@@ -26,7 +25,6 @@ class PasswordAuthenticationCard implements AuthenticatorCardInterface {
     required this.loginEndpoint,
     required this.refreshEndpoint,
     required this.navigatorKey,
-    required this.loginRoute,
   });
 
   @override
@@ -65,12 +63,15 @@ class PasswordAuthenticationCard implements AuthenticatorCardInterface {
   }
 
   void showLogin() {
-    if (context != null && loginPage != null) {
-      Navigator.of(context!).pushReplacement(
-        MaterialPageRoute(builder: (context) => loginPage!),
-      );
-    } else if (navigatorKey != null && loginRoute != null) {
-      navigatorKey!.currentState?.pushAndRemoveUntil(loginRoute!, (route) => false);
-    }
+  if (context != null && loginPage != null) {
+    Navigator.of(context!).pushReplacement(
+      MaterialPageRoute(builder: (context) => loginPage!),
+    );
+  } else if (navigatorKey != null && navigatorKey!.currentState != null && loginPage != null) {
+    navigatorKey!.currentState!.pushAndRemoveUntil(
+      MaterialPageRoute(builder: (_) => loginPage!), 
+      (route) => false,
+    );
   }
+}
 }
