@@ -4,7 +4,6 @@ import 'dart:collection';
 import 'dart:developer';
 
 import 'package:dio/dio.dart';
-import 'package:flutter_moshimoshi/authenticator/app/authenticator.dart';
 import 'package:flutter_moshimoshi/authenticator/authenticator_interface.dart';
 
 class AuthInterceptor extends Interceptor {
