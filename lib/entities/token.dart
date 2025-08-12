@@ -1,3 +1,5 @@
+import 'package:flutter_moshimoshi/core/utils/logs/hybrid_logger_wrapper.dart';
+
 class Token {
   final String value;
   final int expiresIn;
@@ -8,9 +10,9 @@ class Token {
   }
 
   Token(this.value, this.expiresIn, int expirationTimeValue) {
-    print("Creating Token instance with value: $value, expiresIn: $expiresIn, expirationTimeValue: $expirationTimeValue");    
     calculateExpirationTime(expirationTimeValue);
-    print("es válido: $isValid");
+    HybridLoggerWrapper().logger.info(
+        "Creating Token instance with value: $value, expiresIn: $expiresIn, expirationTimeValue: $expirationTimeValue, Token is valid: $isValid");
   }
 
   void calculateExpirationTime(int expirationTimeValue) {
@@ -21,4 +23,8 @@ class Token {
       expirationTime = expirationTimeValue;
     }
   }
+
+  @override
+  String toString() =>
+      'Token(value: $value, expiresIn: $expiresIn, expirationTime: $expirationTime)';
 }

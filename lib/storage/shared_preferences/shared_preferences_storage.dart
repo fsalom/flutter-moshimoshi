@@ -11,16 +11,7 @@ class SharedPreferencesStorage implements StorageInterface {
 
   Future<SharedPreferences> preferences = SharedPreferences.getInstance();
 
-/*
-  SharedPreferencesStorage() {
-    initializer();
-  }
-
-  initializer() async {
-    preferences = 
-  }
-*/
-@override
+  @override
   Future<void> clear() async {
     var storage = await preferences;
     storage.remove(accessTokenKey);
@@ -30,12 +21,12 @@ class SharedPreferencesStorage implements StorageInterface {
   @override
   Future<Token> getAccessToken() async {
     var storage = await preferences;
-    var accessToken= storage.getString(accessTokenKey);
+    var accessToken = storage.getString(accessTokenKey);
     var expiresIn = storage.getInt(expiresInKey);
     var expirationTime = storage.getInt(accessExpirationTimeKey);
 
-    if(accessToken != null && expirationTime != null && expiresIn != null) {
-      return Token(accessToken, expiresIn, expirationTime);      
+    if (accessToken != null && expirationTime != null && expiresIn != null) {
+      return Token(accessToken, expiresIn, expirationTime);
     } else {
       throw UnimplementedError();
     }
@@ -46,8 +37,8 @@ class SharedPreferencesStorage implements StorageInterface {
     var storage = await preferences;
     var refreshToken = storage.getString(refreshTokenKey);
     var expirationTime = storage.getInt(refreshExpirationTimeKey);
-    if(refreshToken != null && expirationTime != null) {
-      return Token(refreshToken, 0, expirationTime);      
+    if (refreshToken != null && expirationTime != null) {
+      return Token(refreshToken, 0, expirationTime);
     } else {
       throw UnimplementedError();
     }
@@ -67,5 +58,4 @@ class SharedPreferencesStorage implements StorageInterface {
     storage.setString(refreshTokenKey, token.value);
     storage.setInt(refreshExpirationTimeKey, token.expirationTime);
   }
-
 }

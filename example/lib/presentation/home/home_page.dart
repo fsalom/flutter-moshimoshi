@@ -22,7 +22,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    Di().setContext(context);      
+    Di().setContext(context);
     return Scaffold(
       backgroundColor: Colors.amber,
       body: BlocBuilder<HomeCubit, BlocStatus>(

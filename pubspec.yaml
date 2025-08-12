@@ -1,33 +1,33 @@
 name: flutter_moshimoshi
-description: "A new Flutter package project."
-version: 0.0.1
+description: "A powerful package for optimizing communication between Flutter applications and HTTP servers. Crafted to simplify the complexities of HTTP requests, authentication, and data storage, MooshiMoshi offers a robust toolkit of utilities and abstractions."
+version: 0.0.2
+
+homepage: https://github.com/fsalom/flutter-moshimoshi
+repository: https://github.com/fsalom/flutter-moshimoshi
+issue_tracker: https://github.com/fsalom/flutter-moshimoshi/issues
+license: MIT
 
 environment:
-  sdk: '>=3.2.6 <4.0.0'
-  flutter: ">=1.17.0"
+  sdk: '>=3.5.0 <4.0.0'
+  flutter: ">=3.32.8 <4.0.0"
 
 dependencies:
   dio: ">=5.8.0 <6.0.0"
   flutter:
     sdk: flutter
   flutter_bloc: ">=9.1.0 <10.0.0"
-  http: ^1.2.0
-  json_annotation: ^4.8.1
-  shared_preferences: ^2.2.2
-  freezed_annotation: ^2.4.1
+  http: ">=1.5.0 <2.0.0"
+  hybrid_logger: ">=1.0.5 <2.0.0"
+  shared_preferences: ">=2.5.3 <3.0.0"
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^2.0.0
-  build_runner: ^2.0.0
-  json_serializable: ^6.7.1
+  flutter_lints: ^6.0.0
+  build_runner: ^2.6.0
 
-# For information on the generic Dart part of this file, see the
-# following page: https://dart.dev/tools/pub/pubspec
-
-# The following section is specific to Flutter packages.
 flutter:
+  uses-material-design: true
   # To add assets to your package, add an assets section, like this:
   # assets:
   #   - images/a_dot_burr.jpeg

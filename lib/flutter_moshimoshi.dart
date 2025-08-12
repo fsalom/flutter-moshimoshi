@@ -1,5 +1,3 @@
-library flutter_moshimoshi;
-
 import 'dart:core';
 import 'package:dio/dio.dart';
 import 'package:flutter_moshimoshi/authenticator/authenticator_interface.dart';
@@ -23,12 +21,12 @@ class MoshiMoshi {
     this.baseUrl,
   }) {
     call = Dio(BaseOptions(
-      baseUrl: baseUrl ?? "", 
+      baseUrl: baseUrl ?? "",
       connectTimeout: _timeout,
     ));
 
     callAuthenticated = Dio(BaseOptions(
-      baseUrl: baseUrl ?? "", 
+      baseUrl: baseUrl ?? "",
       connectTimeout: _timeout,
     ));
 
