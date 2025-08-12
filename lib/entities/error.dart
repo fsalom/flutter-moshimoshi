@@ -1,4 +1,3 @@
-
 class AuthorizationFailed extends Error implements UnsupportedError {
   @override
   final String? message;

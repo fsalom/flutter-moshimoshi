@@ -25,10 +25,12 @@ class PasswordAuthenticationCard implements AuthenticatorCardInterface {
     required this.loginEndpoint,
     required this.refreshEndpoint,
     required this.navigatorKey,
+    required this.loginPage,
   });
 
   @override
-  Future<Tokens?> getCurrentToken(Map<String, dynamic> parameters, {Endpoint? endpoint}) async {
+  Future<Tokens?> getCurrentToken(
+      {required Map<String, dynamic> parameters, Endpoint? endpoint}) async {
     var authenticationEndpoint = endpoint ?? loginEndpoint;
     authenticationEndpoint.formParams.addAll(parameters);
     final response = await authenticationEndpoint.call();
@@ -63,15 +65,17 @@ class PasswordAuthenticationCard implements AuthenticatorCardInterface {
   }
 
   void showLogin() {
-  if (context != null && loginPage != null) {
-    Navigator.of(context!).pushReplacement(
-      MaterialPageRoute(builder: (context) => loginPage!),
-    );
-  } else if (navigatorKey != null && navigatorKey!.currentState != null && loginPage != null) {
-    navigatorKey!.currentState!.pushAndRemoveUntil(
-      MaterialPageRoute(builder: (_) => loginPage!), 
-      (route) => false,
-    );
+    if (context != null && loginPage != null) {
+      Navigator.of(context!).pushReplacement(
+        MaterialPageRoute(builder: (context) => loginPage!),
+      );
+    } else if (navigatorKey != null &&
+        navigatorKey!.currentState != null &&
+        loginPage != null) {
+      navigatorKey!.currentState!.pushAndRemoveUntil(
+        MaterialPageRoute(builder: (_) => loginPage!),
+        (route) => false,
+      );
+    }
   }
-}
 }

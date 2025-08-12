@@ -13,47 +13,52 @@ class Authenticator implements AuthenticatorInterface {
   late AuthenticatorCardInterface card;
 
   Authenticator(this.tokenStore, this.card);
-  
+
   @override
   Future<RequestOptions> authorize(RequestOptions request) async {
-      var accessToken = Isolate.run<String?>(() {    
-        return getCurrentToken();
-      });
-      request.headers["Authorization"] = "Bearer $accessToken";
-      return request;
+    var accessToken = Isolate.run<String?>(() {
+      return getCurrentToken();
+    });
+    request.headers["Authorization"] = "Bearer $accessToken";
+    return request;
   }
-  
+
   @override
   Future<String?> getCurrentToken() async {
     try {
       var tokens = await checkAccess();
       return tokens.accessToken.value;
-    } catch(error) {
+    } catch (error) {
       logout();
+      return null;
     }
   }
-  
+
   @override
-  Future<void> getNewToken(Map<String, dynamic> parameters, {Endpoint? endpoint}) async {
-    var tokens = await card.getCurrentToken(parameters, endpoint: endpoint);
-    if(tokens != null) {  
+  Future<void> getNewToken({
+    required Map<String, dynamic> parameters,
+    Endpoint? endpoint,
+  }) async {
+    var tokens =
+        await card.getCurrentToken(parameters: parameters, endpoint: endpoint);
+    if (tokens != null) {
       tokenStore.setAccessToken(tokens.accessToken);
-      tokenStore.setRefreshToken(tokens.refreshToken);  
+      tokenStore.setRefreshToken(tokens.refreshToken);
     } else {
       throw AuthorizationFailed;
     }
   }
-  
+
   @override
   Future<bool> isLogged() async {
     try {
-    var tokens = await checkAccess();
+      await checkAccess();
       return true;
-    } catch(error) {
+    } catch (error) {
       return false;
     }
   }
-  
+
   @override
   Future<void> logout() async {
     tokenStore.clear();
@@ -69,16 +74,16 @@ class Authenticator implements AuthenticatorInterface {
       } else {
         if (refreshToken.isValid) {
           var tokens = await card.refreshAccessToken(refreshToken.value);
-          if(tokens != null) {
+          if (tokens != null) {
             tokenStore.setAccessToken(tokens.accessToken);
-            tokenStore.setRefreshToken(tokens.refreshToken);    
+            tokenStore.setRefreshToken(tokens.refreshToken);
             return tokens;
           }
-        } 
+        }
         tokenStore.clear();
-        throw AuthorizationFailed(); 
+        throw AuthorizationFailed();
       }
-    } catch(error) {
+    } catch (error) {
       tokenStore.clear();
       throw AuthorizationFailed();
     }

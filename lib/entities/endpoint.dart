@@ -14,17 +14,17 @@ class Endpoint {
   Endpoint({this.url = "", required this.headers, this.method = Method.get});
 
   Future<Response> call() {
-    final url = Uri.parse(this.url); 
+    final url = Uri.parse(this.url);
     final body = jsonEncode(formParams);
     switch (method) {
       case Method.get:
         return http.get(url, headers: headers);
       case Method.post:
-        return http.post(url, headers: headers, body: body);    
+        return http.post(url, headers: headers, body: body);
       case Method.put:
-        return http.put(url, headers: headers, body: body);    
+        return http.put(url, headers: headers, body: body);
       case Method.patch:
-        return http.patch(url, headers: headers, body: body);    
+        return http.patch(url, headers: headers, body: body);
     }
   }
 }

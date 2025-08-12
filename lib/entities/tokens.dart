@@ -1,3 +1,4 @@
+import 'package:flutter_moshimoshi/core/utils/logs/hybrid_logger_wrapper.dart';
 import 'package:flutter_moshimoshi/entities/token.dart';
 
 class Tokens {
@@ -6,8 +7,8 @@ class Tokens {
 
   Tokens({required this.accessToken, required this.refreshToken}) {
     accessToken = accessToken;
-    print("AccessToken: $accessToken");
+    HybridLoggerWrapper().logger.info("AccessToken: $accessToken");
     refreshToken = refreshToken;
-    print("RefreshToken: $refreshToken");
+    HybridLoggerWrapper().logger.info("RefreshToken: $refreshToken");
   }
 }

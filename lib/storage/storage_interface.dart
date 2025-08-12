@@ -1,6 +1,6 @@
 import 'package:flutter_moshimoshi/entities/token.dart';
 
-abstract class StorageInterface {
+abstract interface class StorageInterface {
   Future<Token> getAccessToken();
   Future<void> setAccessToken(Token token);
   Future<Token> getRefreshToken();
