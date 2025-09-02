@@ -3,7 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_moshimoshi/authenticationCard/authentication_card_interface.dart';
 import 'package:flutter_moshimoshi/authenticator/authenticator_interface.dart';
 import 'package:flutter_moshimoshi/entities/endpoint.dart';
-import 'package:flutter_moshimoshi/entities/error.dart';
+import 'package:flutter_moshimoshi/entities/detail_exception.dart';
 import 'package:flutter_moshimoshi/entities/tokens.dart';
 import 'package:flutter_moshimoshi/storage/storage_interface.dart';
 
@@ -39,13 +39,12 @@ class Authenticator implements AuthenticatorInterface {
     required Map<String, dynamic> parameters,
     Endpoint? endpoint,
   }) async {
-    var tokens =
-        await card.getCurrentToken(parameters: parameters, endpoint: endpoint);
-    if (tokens != null) {
+    try {
+      final tokens = await card.getCurrentToken(parameters: parameters, endpoint: endpoint);
       tokenStore.setAccessToken(tokens.accessToken);
       tokenStore.setRefreshToken(tokens.refreshToken);
-    } else {
-      throw AuthorizationFailed;
+    } catch (e) {
+      rethrow;
     }
   }
 
@@ -81,11 +80,11 @@ class Authenticator implements AuthenticatorInterface {
           }
         }
         tokenStore.clear();
-        throw AuthorizationFailed();
+        throw DetailException;
       }
     } catch (error) {
       tokenStore.clear();
-      throw AuthorizationFailed();
+      throw DetailException;
     }
   }
 }
