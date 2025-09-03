@@ -1,6 +1,6 @@
 name: flutter_moshimoshi
 description: "A powerful package for optimizing communication between Flutter applications and HTTP servers. Crafted to simplify the complexities of HTTP requests, authentication, and data storage, MooshiMoshi offers a robust toolkit of utilities and abstractions."
-version: 0.0.2
+version: 1.0.10
 
 homepage: https://github.com/fsalom/flutter-moshimoshi
 repository: https://github.com/fsalom/flutter-moshimoshi
@@ -8,7 +8,7 @@ issue_tracker: https://github.com/fsalom/flutter-moshimoshi/issues
 license: MIT
 
 environment:
-  sdk: '>=3.5.0 <4.0.0'
+  sdk: ">=3.5.0 <4.0.0"
   flutter: ">=3.32.8 <4.0.0"
 
 dependencies:

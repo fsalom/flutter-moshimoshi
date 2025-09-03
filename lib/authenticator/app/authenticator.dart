@@ -28,7 +28,7 @@ class Authenticator implements AuthenticatorInterface {
     try {
       var tokens = await checkAccess();
       return tokens.accessToken.value;
-    } catch (error) {
+    } catch (_) {
       logout();
       return null;
     }
@@ -43,7 +43,7 @@ class Authenticator implements AuthenticatorInterface {
       final tokens = await card.getCurrentToken(parameters: parameters, endpoint: endpoint);
       tokenStore.setAccessToken(tokens.accessToken);
       tokenStore.setRefreshToken(tokens.refreshToken);
-    } catch (e) {
+    } catch (_) {
       rethrow;
     }
   }
@@ -53,7 +53,7 @@ class Authenticator implements AuthenticatorInterface {
     try {
       await checkAccess();
       return true;
-    } catch (error) {
+    } catch (_) {
       return false;
     }
   }
@@ -82,7 +82,7 @@ class Authenticator implements AuthenticatorInterface {
         tokenStore.clear();
         throw DetailException;
       }
-    } catch (error) {
+    } catch (_) {
       tokenStore.clear();
       throw DetailException;
     }
