@@ -5,6 +5,8 @@ import 'package:flutter_moshimoshi/entities/token.dart';
 import 'package:flutter_moshimoshi/entities/tokens.dart';
 import 'package:flutter/material.dart';
 
+import '../../entities/detail_exception.dart';
+
 class PasswordAuthenticationCard implements AuthenticatorCardInterface {
   late final Endpoint loginEndpoint;
   late final Endpoint refreshEndpoint;
@@ -29,18 +31,19 @@ class PasswordAuthenticationCard implements AuthenticatorCardInterface {
   });
 
   @override
-  Future<Tokens?> getCurrentToken(
-      {required Map<String, dynamic> parameters, Endpoint? endpoint}) async {
+  Future<Tokens> getCurrentToken({required Map<String, dynamic> parameters, Endpoint? endpoint}) async {
     var authenticationEndpoint = endpoint ?? loginEndpoint;
     authenticationEndpoint.formParams.addAll(parameters);
     final response = await authenticationEndpoint.call();
-    if (response.statusCode == 200) {
+
+    if (response.statusCode >= 200 && response.statusCode <= 299) {
       final data = jsonDecode(response.body.toString());
       final accessToken = Token(data["access_token"], data["expires_in"], 0);
       final refreshToken = Token(data["refresh_token"], 800000, 0);
       return Tokens(accessToken: accessToken, refreshToken: refreshToken);
+    } else {
+      throw _handleError(response);
     }
-    return null;
   }
 
   @override
@@ -69,13 +72,25 @@ class PasswordAuthenticationCard implements AuthenticatorCardInterface {
       Navigator.of(context!).pushReplacement(
         MaterialPageRoute(builder: (context) => loginPage!),
       );
-    } else if (navigatorKey != null &&
-        navigatorKey!.currentState != null &&
-        loginPage != null) {
+    } else if (navigatorKey != null && navigatorKey!.currentState != null && loginPage != null) {
       navigatorKey!.currentState!.pushAndRemoveUntil(
         MaterialPageRoute(builder: (_) => loginPage!),
         (route) => false,
       );
     }
+  }
+
+  DetailException _handleError(dynamic response) {
+    int statusCode = response.statusCode;
+    String? message;
+
+    try {
+      final data = jsonDecode(response.body.toString());
+      message = data["message"]?.toString();
+    } catch (_) {
+      message = response.body.toString();
+    }
+
+    return DetailException(statusCode, message);
   }
 }
