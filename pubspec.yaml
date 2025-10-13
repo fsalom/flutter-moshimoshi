@@ -1,6 +1,6 @@
 name: flutter_moshimoshi
 description: "A powerful package for optimizing communication between Flutter applications and HTTP servers. Crafted to simplify the complexities of HTTP requests, authentication, and data storage, MooshiMoshi offers a robust toolkit of utilities and abstractions."
-version: 1.0.10
+version: 1.1.0+11
 
 homepage: https://github.com/fsalom/flutter-moshimoshi
 repository: https://github.com/fsalom/flutter-moshimoshi
@@ -16,15 +16,13 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_bloc: ">=9.1.0 <10.0.0"
-  http: ">=1.5.0 <2.0.0"
-  hybrid_logger: ">=1.0.5 <2.0.0"
   shared_preferences: ">=2.5.3 <3.0.0"
 
 dev_dependencies:
+  build_runner: ^2.6.0
+  flutter_lints: ^6.0.0
   flutter_test:
     sdk: flutter
-  flutter_lints: ^6.0.0
-  build_runner: ^2.6.0
 
 flutter:
   uses-material-design: true

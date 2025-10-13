@@ -2,7 +2,6 @@ import 'package:example/bloc/bloc_status.dart';
 import 'package:example/constants/constants.dart';
 import 'package:example/di/di.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_moshimoshi/core/utils/logs/hybrid_logger_wrapper.dart';
 import 'package:flutter_moshimoshi/entities/token.dart';
 
 class HomeCubit extends Cubit<BlocStatus> {
@@ -51,11 +50,7 @@ class HomeCubit extends Cubit<BlocStatus> {
   void authenticatedCall() async {
     try {
       emit(BlocStatus.loading);
-      var data = Di()
-          .moshi
-          ?.callAuthenticated
-          .get("${Constants.baseUrl}/sites/favorites?page=1");
-      HybridLoggerWrapper().logger.info(data.toString());
+      Di().moshi?.callAuthenticated.get("${Constants.baseUrl}/sites/favorites?page=1",);
       emit(BlocStatus.success);
     } catch (error) {
       emit(BlocStatus.error);

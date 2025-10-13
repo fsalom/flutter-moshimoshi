@@ -4,6 +4,47 @@
 
 ### Added
 
+### Changed
+
+### Fixed
+
+---
+
+## 1.1.0 (2025-10-09)
+
+### Added
+
+- **Dio Integration**: Migrated from `http` package to `Dio` for improved HTTP request handling
+- **Logger Interceptor Type**: Added new `InterceptorType.logger` for better logging management
+- **Interceptor Support in Endpoint**: Added optional `loggerInterceptor` parameter to Endpoint class
+- **DELETE Method Support**: Added DELETE HTTP method to Endpoint enum
+
+### Changed
+
+- **Response Handling**: Updated authentication methods to properly handle Dio's response structure (`response.data` instead of `response.body`)
+- **Endpoint Constructor**: Improved with required URL parameter, mutable maps support, and assert validation
+- **Response Data Parsing**: Enhanced to handle Map, List, and String JSON formats consistently
+- **Error Message Extraction**: Improved to handle various error response formats (Map, List, String JSON)
+- **Interceptor Management**: Improved interceptor handling with support for logger type that applies to both authenticated and non-authenticated calls
+- **Parameter Handling**: Changed from `formParams` to `data` in authentication card for better consistency
+
+### Fixed
+
+- **Null Status Code Handling**: Added validation to throw `DetailException` when response status code is null
+- **Method Consistency**: Aligned `_parseResponseData` and `_extractErrorMessage` to handle identical data formats
+- **Code Cleanup**: Removed unused imports and dependencies from various files
+
+### Removed
+
+- **HTTP Package Dependencies**: Removed dependency on `http` package in favor of Dio
+- **HybridLogger Wrapper**: Removed HybridLoggerWrapper usage from core
+
+---
+
+## 1.0.10 (2025-09-03)
+
+### Added
+
 - **Detail Exception**: Integration of the `Detail Exception` error, with the status code and message parameters
 
 ### Changed
@@ -13,8 +54,6 @@
 ### Fixed
 
 ### Removed
-
-- `AuthorizationFailed` class removed
 
 ---
 

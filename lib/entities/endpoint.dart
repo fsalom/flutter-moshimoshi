@@ -1,30 +1,71 @@
-import 'dart:convert';
-import 'package:http/http.dart' as http;
-import 'package:http/http.dart';
+import 'package:dio/dio.dart';
 
-enum Method { get, post, put, patch }
+enum Method { get, post, put, patch, delete }
 
 class Endpoint {
-  late String url;
-  late Method method;
-  Map<String, String> headers = {};
-  Map<String, String> queryParams = {};
-  Map<String, dynamic> formParams = {};
+  final String url;
+  final Method method;
+  final Map<String, String> headers;
+  final Map<String, String> queryParameters;
+  final Map<String, dynamic> data;
+  final Interceptor? loggerInterceptor;
 
-  Endpoint({this.url = "", required this.headers, this.method = Method.get});
+  Endpoint({
+    required this.url,
+    this.method = Method.get,
+    Map<String, String>? headers,
+    Map<String, String>? queryParameters,
+    Map<String, dynamic>? data,
+    this.loggerInterceptor,
+  })  : headers = headers ?? <String, String>{},
+        queryParameters = queryParameters ?? <String, String>{},
+        data = data ?? <String, dynamic>{},
+        assert(url.isNotEmpty, 'La URL no puede estar vacía');
 
-  Future<Response> call() {
-    final url = Uri.parse(this.url);
-    final body = jsonEncode(formParams);
+  Future<Response> call() async {
+    final dio = Dio();
+
+    if (loggerInterceptor != null) dio.interceptors.add(loggerInterceptor!);
+
+    final options = Options(headers: headers.isNotEmpty ? headers : null);
+    final queryParams = queryParameters.isNotEmpty ? queryParameters : null;
+    final bodyData = data.isNotEmpty ? data : null;
+
     switch (method) {
       case Method.get:
-        return http.get(url, headers: headers);
+        return await dio.get(
+          url,
+          queryParameters: queryParams,
+          options: options,
+        );
       case Method.post:
-        return http.post(url, headers: headers, body: body);
+        return await dio.post(
+          url,
+          queryParameters: queryParams,
+          data: bodyData,
+          options: options,
+        );
       case Method.put:
-        return http.put(url, headers: headers, body: body);
+        return await dio.put(
+          url,
+          queryParameters: queryParams,
+          data: bodyData,
+          options: options,
+        );
       case Method.patch:
-        return http.patch(url, headers: headers, body: body);
+        return await dio.patch(
+          url,
+          queryParameters: queryParams,
+          data: bodyData,
+          options: options,
+        );
+      case Method.delete:
+        return await dio.delete(
+          url,
+          queryParameters: queryParams,
+          data: bodyData,
+          options: options,
+        );
     }
   }
 }

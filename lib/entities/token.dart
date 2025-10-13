@@ -1,5 +1,3 @@
-import 'package:flutter_moshimoshi/core/utils/logs/hybrid_logger_wrapper.dart';
-
 class Token {
   final String value;
   final int expiresIn;
@@ -23,6 +21,5 @@ class Token {
   }
 
   @override
-  String toString() =>
-      'Token(value: $value, expiresIn: $expiresIn, expirationTime: $expirationTime)';
+  String toString() => 'Token(value: $value, expiresIn: $expiresIn, expirationTime: $expirationTime)';
 }

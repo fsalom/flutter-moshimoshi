@@ -33,11 +33,16 @@ class PasswordAuthenticationCard implements AuthenticatorCardInterface {
   @override
   Future<Tokens> getCurrentToken({required Map<String, dynamic> parameters, Endpoint? endpoint}) async {
     var authenticationEndpoint = endpoint ?? loginEndpoint;
-    authenticationEndpoint.formParams.addAll(parameters);
+    authenticationEndpoint.data.addAll(parameters);
     final response = await authenticationEndpoint.call();
 
-    if (response.statusCode >= 200 && response.statusCode <= 299) {
-      final data = jsonDecode(response.body.toString());
+    if (response.statusCode == null) {
+      throw DetailException(-1, "No status code received from server");
+    }
+
+    if (response.statusCode! >= 200 && response.statusCode! <= 299) {
+      final data = _parseResponseData(response);
+
       final accessToken = Token(data["access_token"], data["expires_in"], 0);
       final refreshToken = Token(data["refresh_token"], 800000, 0);
       return Tokens(accessToken: accessToken, refreshToken: refreshToken);
@@ -49,10 +54,11 @@ class PasswordAuthenticationCard implements AuthenticatorCardInterface {
   @override
   Future<Tokens?> refreshAccessToken(String refreshToken) async {
     final refreshTokenEntry = <String, String>{"refresh_token": refreshToken};
-    refreshEndpoint.formParams.addEntries(refreshTokenEntry.entries);
+    refreshEndpoint.data.addEntries(refreshTokenEntry.entries);
     final response = await refreshEndpoint.call();
     if (response.statusCode == 200) {
-      var data = jsonDecode(response.body.toString());
+      final data = _parseResponseData(response);
+
       var accessToken = Token(data["access_token"], data["expires_in"], 0);
       var refreshToken = Token(data["refresh_token"], 800000, 0);
       return Tokens(accessToken: accessToken, refreshToken: refreshToken);
@@ -81,16 +87,70 @@ class PasswordAuthenticationCard implements AuthenticatorCardInterface {
   }
 
   DetailException _handleError(dynamic response) {
-    int statusCode = response.statusCode;
+    final int statusCode = response.statusCode ?? -1;
     String? message;
 
     try {
-      final data = jsonDecode(response.body.toString());
-      message = data["message"]?.toString();
+      final data = response.data;
+      message = _extractErrorMessage(data) ?? data?.toString() ?? "Error desconocido";
     } catch (_) {
-      message = response.body.toString();
+      message = response.data?.toString() ?? response.toString();
     }
 
     return DetailException(statusCode, message);
+  }
+
+  String? _extractErrorMessage(dynamic data) {
+    if (data is Map<String, dynamic>) {
+      return data["message"]?.toString();
+    }
+
+    if (data is List<dynamic> && data.isNotEmpty && data.first is Map<String, dynamic>) {
+      return (data.first as Map<String, dynamic>)["message"]?.toString();
+    }
+
+    if (data is String) {
+      try {
+        final parsedData = jsonDecode(data);
+        if (parsedData is Map<String, dynamic>) {
+          return parsedData["message"]?.toString();
+        }
+        if (parsedData is List<dynamic> && parsedData.isNotEmpty && parsedData.first is Map<String, dynamic>) {
+          return (parsedData.first as Map<String, dynamic>)["message"]?.toString();
+        }
+      } catch (_) {
+        return null;
+      }
+    }
+
+    return null;
+  }
+
+  Map<String, dynamic> _parseResponseData(dynamic response) {
+    final data = response.data;
+
+    if (data is Map<String, dynamic>) {
+      return data;
+    }
+
+    if (data is List<dynamic> && data.isNotEmpty && data.first is Map<String, dynamic>) {
+      return data.first as Map<String, dynamic>;
+    }
+
+    if (data is String) {
+      try {
+        final parsedData = jsonDecode(data);
+        if (parsedData is Map<String, dynamic>) {
+          return parsedData;
+        }
+        if (parsedData is List<dynamic> && parsedData.isNotEmpty && parsedData.first is Map<String, dynamic>) {
+          return parsedData.first as Map<String, dynamic>;
+        }
+      } catch (_) {
+        throw DetailException(response.statusCode ?? -1, "Invalid JSON string in response");
+      }
+    }
+
+    throw DetailException(response.statusCode ?? -1, "Response data is not a valid Map or List with Map elements");
   }
 }

@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 enum InterceptorType {
   authenticated,
   nonAuthenticated,
+  logger,
 }
 
 class MoshiInterceptor {

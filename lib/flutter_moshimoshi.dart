@@ -1,4 +1,5 @@
 import 'dart:core';
+
 import 'package:dio/dio.dart';
 import 'package:flutter_moshimoshi/authenticator/authenticator_interface.dart';
 import 'package:flutter_moshimoshi/entities/moshi_interceptor.dart';
@@ -38,6 +39,9 @@ class MoshiMoshi {
         case InterceptorType.authenticated:
           callAuthenticated.interceptors.add(moshiInterceptor.interceptor);
           break;
+        case InterceptorType.logger:
+          call.interceptors.add(moshiInterceptor.interceptor);
+          callAuthenticated.interceptors.add(moshiInterceptor.interceptor);
       }
     }
   }

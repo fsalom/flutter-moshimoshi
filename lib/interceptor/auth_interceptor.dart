@@ -3,8 +3,6 @@ import 'dart:collection';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_moshimoshi/authenticator/authenticator_interface.dart';
-import 'package:flutter_moshimoshi/core/utils/logs/hybrid_logger_wrapper.dart';
-import 'package:hybrid_logger/hybrid_logger.dart';
 
 class AuthInterceptor extends Interceptor {
   late final AuthenticatorInterface authenticator;
@@ -53,16 +51,8 @@ class AuthInterceptor extends Interceptor {
 
   @override
   void onResponse(Response response, ResponseInterceptorHandler handler) {
-    HybridLoggerWrapper().logger.httpResponse(
-          HybridHttpResponse(
-            statusCode:
-                response.statusCode?.toString() ?? 'Response statusCode null',
-            statusMessage:
-                response.statusMessage ?? 'Response statusMessage null',
-            data: response.data,
-            ms: response.realUri.queryParameters.toString(),
-          ),
-        );
+    // Simplemente pasar la respuesta al siguiente interceptor o al llamador original
+    // Puedes agregar lógica adicional aquí si es necesario
     super.onResponse(response, handler);
   }
 
@@ -72,15 +62,6 @@ class AuthInterceptor extends Interceptor {
     if (err.response != null && err.response!.statusCode == 401) {
       // Realizar acciones específicas para el código de estado 401, como redirección a la página de inicio de sesión
       // También puedes elegir no arrojar una excepción para evitar que se propague el error.
-      HybridLoggerWrapper().logger.httpResponse(
-            HybridHttpResponse(
-              statusCode: err.response!.statusCode!.toString(),
-              statusMessage:
-                  "Error 401: Redirección a la página de inicio de sesión",
-              data: err.response?.data,
-              ms: err.response?.realUri.queryParameters.toString(),
-            ),
-          );
     } else {
       // Manejar otros errores según sea necesario
       super.onError(err, handler);
